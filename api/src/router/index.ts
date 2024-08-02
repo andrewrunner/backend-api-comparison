@@ -1,6 +1,6 @@
 import express from "express";
-import restApiRoutes from "./rest-api";
-import graphQLRoutes from "./graphql";
+import restApiRoutes from "@/router/rest-api";
+import graphQLRoutes from "@/router/graphql";
 
 const router = express.Router();
 
