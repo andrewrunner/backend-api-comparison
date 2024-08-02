@@ -1,11 +1,12 @@
-import express, { Express, Request, Response , Application } from 'express';
-//import dotenv from 'dotenv';
-import router from "./router";
+import dotenv from 'dotenv';
+import express, { Express, Request, Response, Application } from 'express';
 
-//dotenv.config();
+import router from "./src/router";
+
+dotenv.config();
 
 const app:Application = express()
-const port = 3000; // process.env.PORT || 3000;
+const port = process.env.PORT || 8000;
 
 app.use(router);
 
