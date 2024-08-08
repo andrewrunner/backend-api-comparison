@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   api:
-    container_name: 'api-server'
+    container_name: api-server
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -14,22 +14,25 @@ services:
     volumes:
       - './:/app:rw'
       - '/app/node_modules/'
-    networks:
-      - api-network
+    depends_on:
+      - db
+#    networks:
+#      - api-network
 
   db:
-    container_name: 'api-database'
+    container_name: api-database
     image: 'postgres:16-alpine'
     environment:
+      - POSTGRES_DB=docker
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     ports:
       - '5432:5432'
     volumes:
       - db-volume:/var/lib/postgresql/data
-      - ./db/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
-    networks:
-      - api-network
+      - ./src/database/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+#    networks:
+#      - api-network
     restart: unless-stopped
 
 
@@ -54,6 +57,6 @@ volumes:
   db-volume:
     driver: local
 
-networks:
-  api-network:
-    name: api-network
+#networks:
+#  api-network:
+#    name: api-network

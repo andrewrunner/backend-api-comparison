@@ -1,26 +1,45 @@
-import express, {Express, Request, Response, Application, Router} from 'express';
+import express, {Request, Response, Application, Router, NextFunction} from 'express';
+import {IncomingMessage, ServerResponse} from "http";
+import * as http from "http";
 
 export class Server {
 
-    private server:Application;
+    /*
+    const app = express();
+    app.use(...)
+    ...
+    const server = http.createServer(app);
+    server.listen(8080, () => { console.log('started'); })
+
+    */
+
+    private router: Router;
+    private app:Application;
+    private server:http.Server<typeof IncomingMessage, typeof ServerResponse>;
 
     constructor() {
-        this.server = express();
+        this.router = express.Router();
+        this.app = express();
+        this.app.use(express.json());
+    }
+
+    public addMiddleware(middleware: (req:Request, ser:Response, next:NextFunction) => Application) {
+        this.app.use(middleware);
     }
 
     public useRouter(router: Router) {
-        this.server.use(router);
+        this.app.use(router);
     }
 
     public start(port:number) {
-        this.server.listen(port, () => {
+        this.server = this.app.listen(port, () => {
             console.log(`App listening on port ${port}`)
         })
     }
 
     public stop() {
         if (this.server) {
-            console.log('server closed')
+            this.server.close();
         }
     }
 }
